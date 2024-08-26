@@ -1,8 +1,6 @@
-package dev.dluks.contactsmanager;
+package dev.dluks.contactsmanager.db;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -45,33 +43,34 @@ public class H2InMemoryDatabase implements IDatabase {
     }
 
     @Override
-    public void executeScript(String fileName) throws SQLException {
+    public void executeScript(String filePath) throws SQLException {
         if (connection != null && !connection.isClosed()) {
-            try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName)) {
-                assert inputStream != null;
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-                     Statement statement = connection.createStatement()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(filePath, StandardCharsets.UTF_8));
+                 Statement statement = connection.createStatement()) {
 
-                    StringBuilder scriptBuilder = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        scriptBuilder.append(line).append("\n");
-                    }
-
-                    String[] sqlStatements = scriptBuilder.toString().split(";");
-                    for (String sql : sqlStatements) {
-                        if (!sql.trim().isEmpty()) {
-                            statement.execute(sql.trim());
-                        }
-                    }
-
-                    System.out.println("Script executed successfully.");
+                StringBuilder scriptBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    scriptBuilder.append(line).append("\n");
                 }
-            } catch (Exception e) {
-                throw new SQLException("Failed to execute script: " + fileName, e);
+
+                String[] sqlStatements = scriptBuilder.toString().split(";");
+                for (String sql : sqlStatements) {
+                    if (!sql.trim().isEmpty()) {
+                        statement.execute(sql.trim());
+                    }
+                }
+                System.out.println("Script executed successfully.");
+            } catch (IOException e) {
+                throw new SQLException("Failed to read script: " + filePath, e);
             }
         } else {
             System.out.println("Not connected to the database.");
         }
+    }
+
+    public Connection getConnection() throws SQLException {
+        this.connect();
+        return connection;
     }
 }

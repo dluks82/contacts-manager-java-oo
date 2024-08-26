@@ -1,4 +1,4 @@
-package dev.dluks.contactsmanager;
+package dev.dluks.contactsmanager.db;
 
 import java.sql.SQLException;
 
