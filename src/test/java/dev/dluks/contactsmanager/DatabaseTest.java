@@ -1,5 +1,8 @@
 package dev.dluks.contactsmanager;
 
+import dev.dluks.contactsmanager.db.DatabaseInitializer;
+import dev.dluks.contactsmanager.db.H2InMemoryDatabase;
+import dev.dluks.contactsmanager.db.IDatabase;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

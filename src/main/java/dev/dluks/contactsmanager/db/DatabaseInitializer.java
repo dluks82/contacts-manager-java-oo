@@ -1,10 +1,10 @@
-package dev.dluks.contactsmanager;
+package dev.dluks.contactsmanager.db;
 
 import java.sql.SQLException;
 
 public class DatabaseInitializer {
 
     public static void execute(IDatabase database) throws SQLException {
-        database.executeScript("schema.sql");
+        database.executeScript("src/db/schema.sql");
     }
 }
