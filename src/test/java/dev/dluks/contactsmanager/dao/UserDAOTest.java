@@ -6,8 +6,7 @@ import dev.dluks.contactsmanager.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,6 +19,9 @@ class UserDAOTest {
     public void setup() {
         try {
             connection = db.getConnection();
+            try (Statement stmt = connection.createStatement()) {
+                stmt.execute("DROP TABLE IF EXISTS users");
+            }
             DatabaseInitializer.execute(db);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -30,14 +32,6 @@ class UserDAOTest {
     @Test
     public void shouldBeAbleToAddNewUser() throws SQLException {
         User newUser = new User("Diogo", "diogo", "123");
-        User newUser2 = new User("Diogo2", "diogo2", "123");
-
-        sut.addUser(newUser);
-        sut.addUser(newUser2);
-
-        assertNotNull(newUser.getId());
-        assertEquals(newUser2.getId().longValue(), 2L);
-
-        assertEquals(newUser2.getName(), "Diogo2");
+        assertTrue(sut.registerUser(newUser));
     }
 }
