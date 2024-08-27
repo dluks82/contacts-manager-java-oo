@@ -12,22 +12,39 @@ public class UserDAO {
         this.connection = connection;
     }
 
-    public void addUser(User newUser) throws SQLException {
+    public boolean registerUser(User newUser) throws SQLException {
         String sql = "INSERT INTO users (name, login, password) VALUES (?, ?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, newUser.getName());
             statement.setString(2, newUser.getLogin());
-            statement.setString(3, newUser.getPassword());
+            statement.setString(3, newUser.getPasswordHash());
 
             int affectedRows = statement.executeUpdate();
-            if (affectedRows > 0) {
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        newUser.setId(generatedKeys.getLong(1));
-                    }
+
+            return affectedRows > 0;
+        }
+    }
+
+    public User findByLogin(String login) {
+        String sql = "SELECT * FROM users WHERE login = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, login);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new User(
+                            rs.getLong("id"),
+                            rs.getString("name"),
+                            rs.getString("login"),
+                            rs.getString("password")
+                    );
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace(); // TODO: refactor in future
         }
+        return null;
     }
 }
