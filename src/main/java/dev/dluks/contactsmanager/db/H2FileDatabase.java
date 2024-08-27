@@ -20,7 +20,6 @@ public class H2FileDatabase implements IDatabase {
             connection = DriverManager.getConnection(
                     JDBC_URL, JDBC_USER, JDBC_PASSWORD
             );
-            System.out.println("Connected to the database.");
         }
     }
 
@@ -28,7 +27,6 @@ public class H2FileDatabase implements IDatabase {
     public void disconnect() throws SQLException {
         if (connection != null && !connection.isClosed()) {
             connection.close();
-            System.out.println("Disconnected from the database.");
         }
     }
 
@@ -59,7 +57,6 @@ public class H2FileDatabase implements IDatabase {
                         statement.execute(sql.trim());
                     }
                 }
-                System.out.println("Script executed successfully.");
             } catch (IOException e) {
                 throw new SQLException("Failed to read script: " + filePath, e);
             }
