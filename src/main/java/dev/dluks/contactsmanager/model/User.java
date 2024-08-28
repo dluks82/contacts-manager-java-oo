@@ -5,19 +5,19 @@ import java.util.Objects;
 public class User {
     private Long id;
     private String name;
-    private String login;
+    private String username;
     private String passwordHash;
 
-    public User(String name, String login, String password) {
+    public User(String name, String username, String password) {
         this.name = name;
-        this.login = login;
+        this.username = username;
         this.passwordHash = passwordToHash(password);
     }
 
-    public User(Long id, String name, String login, String passwordHash) {
+    public User(Long id, String name, String username, String passwordHash) {
         this.id = id;
         this.name = name;
-        this.login = login;
+        this.username = username;
         this.passwordHash = passwordHash;
     }
 
@@ -29,8 +29,8 @@ public class User {
         return name;
     }
 
-    public String getLogin() {
-        return login;
+    public String getUsername() {
+        return username;
     }
 
     public String getPasswordHash() {
@@ -44,13 +44,13 @@ public class User {
         User user = (User) o;
         return Objects.equals(id, user.id)
                 && Objects.equals(name, user.name)
-                && Objects.equals(login, user.login)
+                && Objects.equals(username, user.username)
                 && Objects.equals(passwordHash, user.passwordHash);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, login, passwordHash);
+        return Objects.hash(id, name, username, passwordHash);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", login='" + login + '\'' +
+                ", username='" + username + '\'' +
                 ", password='" + passwordHash + '\'' + // TODO: refactor to remove this
                 '}';
     }

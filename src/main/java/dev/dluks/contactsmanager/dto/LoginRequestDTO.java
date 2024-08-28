@@ -1,10 +1,10 @@
 package dev.dluks.contactsmanager.dto;
 
-public record LoginRequestDTO(String login, String password) {
+public record LoginRequestDTO(String username, String password) {
     public LoginRequestDTO {
-        if (login == null || login.trim().isEmpty() ||
+        if (username == null || username.trim().isEmpty() ||
                 password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("login and password cannot be null or empty!");
+            throw new IllegalArgumentException("username and password cannot be null or empty!");
         }
     }
 }
