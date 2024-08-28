@@ -30,6 +30,7 @@ class UserServiceTest {
             connection = db.getConnection();
 
             try (Statement stmt = connection.createStatement()) {
+                stmt.execute("DROP TABLE IF EXISTS contacts");
                 stmt.execute("DROP TABLE IF EXISTS users");
             }
 
