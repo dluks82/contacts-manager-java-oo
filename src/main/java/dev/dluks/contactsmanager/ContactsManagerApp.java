@@ -8,6 +8,7 @@ import dev.dluks.contactsmanager.dto.LoginResponseDTO;
 import dev.dluks.contactsmanager.dto.RegisterUserRequestDTO;
 import dev.dluks.contactsmanager.dto.RegisterUserResponseDTO;
 import dev.dluks.contactsmanager.service.UserService;
+import dev.dluks.contactsmanager.ui.*;
 
 import java.sql.Connection;
 import java.util.Scanner;
@@ -36,25 +37,18 @@ public class ContactsManagerApp {
             System.exit(1);
         }
 
-        System.out.println("Welcome to Contacts Manager App");
-
         Scanner scanner = new Scanner(System.in);
 
         boolean keepRunning = true;
 
         while (keepRunning) {
+            Screen.clear();
+            Header.show();
 
             if (isLogged) {
-                showLoggedMenu();
-            } else {
-                showUnloggedMenu();
-            }
+                LoggedMenu.show(name);
+                int inputOption = Input.getAsInt("Enter the option: ", scanner, false);
 
-            System.out.print("Enter the desired option: ");
-            int inputOption = scanner.nextInt();
-            scanner.nextLine();
-
-            if (isLogged) {
                 switch (inputOption) {
                     case 9 -> {
                         id = null;
@@ -65,6 +59,9 @@ public class ContactsManagerApp {
                 }
 
             } else {
+                UnloggedMenu.show();
+                int inputOption = Input.getAsInt("Enter the option: ", scanner, false);
+
                 switch (inputOption) {
                     case 1 -> logarUsuario(scanner); // Logar
 
@@ -78,16 +75,13 @@ public class ContactsManagerApp {
         }
 
         scanner.close();
-
     }
 
     private static void logarUsuario(Scanner scanner) {
-        System.out.print("Enter your username: ");
-        String login = scanner.nextLine();
-        System.out.print("Enter your password: ");
-        String password = scanner.nextLine();
+        String username = Input.getAsString("Enter your username: ", scanner, false);
+        String password = Input.getAsString("Enter your password: ", scanner, false);
 
-        LoginRequestDTO request = new LoginRequestDTO(login, password);
+        LoginRequestDTO request = new LoginRequestDTO(username, password);
         LoginResponseDTO response = userService.login(request);
 
         if (response != null && response.logged()) {
@@ -103,12 +97,9 @@ public class ContactsManagerApp {
 
     private static void registrarUsuario(Scanner scanner) {
 
-        System.out.print("Enter your name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter your username: ");
-        String username = scanner.nextLine();
-        System.out.print("Enter your password: ");
-        String password = scanner.nextLine();
+        String name = Input.getAsString("Enter your name: ", scanner, false);
+        String username = Input.getAsString("Enter your username: ", scanner, false);
+        String password = Input.getAsString("Enter your password: ", scanner, false);
 
         RegisterUserRequestDTO request = new RegisterUserRequestDTO(name, username, password);
 
@@ -123,18 +114,4 @@ public class ContactsManagerApp {
         }
     }
 
-    private static void showUnloggedMenu() {
-        System.out.println("""
-                [1] - Login
-                [2] - Register
-                [9] - Exit Application
-                """);
-    }
-
-    private static void showLoggedMenu() {
-        System.out.println("Logged in User: " + name);
-        System.out.println("""
-                [9] - Logout
-                """);
-    }
 }
