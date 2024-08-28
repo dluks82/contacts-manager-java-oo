@@ -13,11 +13,14 @@ public class UserDAO {
     }
 
     public boolean registerUser(User newUser) throws SQLException {
-        String sql = "INSERT INTO users (name, login, password) VALUES (?, ?, ?)";
+
+
+
+        String sql = "INSERT INTO users (name, username, password) VALUES (?, ?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, newUser.getName());
-            statement.setString(2, newUser.getLogin());
+            statement.setString(2, newUser.getUsername());
             statement.setString(3, newUser.getPasswordHash());
 
             int affectedRows = statement.executeUpdate();
@@ -27,7 +30,7 @@ public class UserDAO {
     }
 
     public User findByLogin(String login) {
-        String sql = "SELECT * FROM users WHERE login = ?";
+        String sql = "SELECT * FROM users WHERE username = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, login);
@@ -37,7 +40,7 @@ public class UserDAO {
                     return new User(
                             rs.getLong("id"),
                             rs.getString("name"),
-                            rs.getString("login"),
+                            rs.getString("username"),
                             rs.getString("password")
                     );
                 }
