@@ -32,6 +32,22 @@ class UserDAOTest {
     @Test
     public void shouldBeAbleToAddNewUser() throws SQLException {
         User newUser = new User("Diogo", "diogo", "123");
-        assertTrue(sut.registerUser(newUser));
+        Long userId = sut.save(newUser);
+        assertEquals(userId, 1L);
+
+        User user = sut.findById(userId);
+
+        assertNotNull(user);
+    }
+
+    @Test
+    public void shouldNotBeAbleToGetAnUser() throws SQLException {
+        User newUser = new User("Diogo", "diogo", "123");
+        Long userId = sut.save(newUser);
+        assertEquals(userId, 1L);
+
+        User user = sut.findById(2L);
+
+        assertNull(user);
     }
 }

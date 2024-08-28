@@ -47,6 +47,7 @@ class UserServiceTest {
         RegisterUserRequestDTO newUser = new RegisterUserRequestDTO("Diogo", "diogo", "123");
         RegisterUserResponseDTO response = sut.register(newUser);
         assertTrue(response.created());
+        assertEquals(1L, response.id());
     }
 
     @Test
