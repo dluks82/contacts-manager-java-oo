@@ -74,7 +74,7 @@ class UserServiceTest {
 
         LoginResponseDTO loginResponseDTO = sut.login(loginRequestDTO);
 
-        assertNull(loginResponseDTO);
+        assertFalse(loginResponseDTO.logged());
     }
 
     @Test
@@ -88,6 +88,6 @@ class UserServiceTest {
 
         LoginResponseDTO loginResponseDTO = sut.login(loginRequestDTO);
 
-        assertNull(loginResponseDTO);
+        assertFalse(loginResponseDTO.logged());
     }
 }

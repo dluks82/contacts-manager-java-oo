@@ -18,18 +18,23 @@ public class UserService {
 
     public RegisterUserResponseDTO register(RegisterUserRequestDTO data) {
         try {
-            User newUser = new User(data.name(), data.login(), data.password());
-            return new RegisterUserResponseDTO(userDAO.registerUser(newUser));
+
+            if (userDAO.findByLogin(data.username()) != null) {
+                return new RegisterUserResponseDTO(false, "User already exists!");
+            }
+
+            User newUser = new User(data.name(), data.username(), data.password());
+            return new RegisterUserResponseDTO(userDAO.registerUser(newUser), null);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public LoginResponseDTO login(LoginRequestDTO data) {
-        User user = userDAO.findByLogin(data.login());
+        User user = userDAO.findByLogin(data.username());
         if (user != null && user.passwordMatch(data.password())) {
-            return new LoginResponseDTO(user.getId(), user.getName());
+            return new LoginResponseDTO(true, user.getId(), user.getName(), null);
         }
-        return null;
+        return new LoginResponseDTO(false, null, null, "Invalid username or password!");
     }
 }
