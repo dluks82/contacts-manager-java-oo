@@ -52,6 +52,17 @@ class UserServiceTest {
     }
 
     @Test
+    public void shouldNotBeAbleToRegisterNewUserWithSameUsername() {
+        RegisterUserRequestDTO newUser = new RegisterUserRequestDTO("Diogo", "diogo", "123");
+        RegisterUserRequestDTO newUser_dup = new RegisterUserRequestDTO("Other Diogo", "diogo", "123");
+
+        RegisterUserResponseDTO response = sut.register(newUser);
+        RegisterUserResponseDTO response_dup = sut.register(newUser_dup);
+
+        assertFalse(response_dup.created());
+    }
+
+    @Test
     public void shouldBeAbleToLogin() {
         RegisterUserRequestDTO newUser = new RegisterUserRequestDTO("Diogo", "diogo", "123");
         sut.register(newUser);

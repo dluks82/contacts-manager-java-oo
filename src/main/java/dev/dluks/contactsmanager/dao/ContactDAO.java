@@ -38,6 +38,86 @@ public class ContactDAO {
         }
     }
 
+    public int remove(Contact contact) {
+        String sql = "DELETE FROM contacts WHERE id = ? AND user_id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, contact.getId());
+            stmt.setLong(2, contact.getUser_id());
+
+            return stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int update(Contact contact) {
+        String sql = "UPDATE contacts SET name = ?, phone = ?, email = ? WHERE id = ? AND user_id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, contact.getName());
+            stmt.setString(2, contact.getPhone());
+            stmt.setString(3, contact.getEmail());
+            stmt.setLong(4, contact.getId());
+            stmt.setLong(5, contact.getUser_id());
+
+            return stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating contact: " + e.getMessage(), e);
+        }
+    }
+
+
+    public Contact findByPhoneAndUserId(String phone, Long userId) {
+        String sql = "SELECT * FROM contacts WHERE phone = ?  AND user_id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, phone);
+            stmt.setLong(2, userId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Contact(
+                            rs.getLong("id"),
+                            rs.getString("name"),
+                            rs.getString("phone"),
+                            rs.getString("email"),
+                            rs.getLong("user_id")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // TODO: refactor in future
+        }
+        return null;
+    }
+
+    public Contact findByEmailAndUserId(String email, Long userId) {
+        String sql = "SELECT * FROM contacts WHERE email = ? AND user_id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            stmt.setLong(2, userId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Contact(
+                            rs.getLong("id"),
+                            rs.getString("name"),
+                            rs.getString("phone"),
+                            rs.getString("email"),
+                            rs.getLong("user_id")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // TODO: refactor in future
+        }
+        return null;
+    }
+
     public Contact findById(Long id, Long userId) {
         String sql = "SELECT * FROM contacts WHERE id = ? AND user_id = ?";
 

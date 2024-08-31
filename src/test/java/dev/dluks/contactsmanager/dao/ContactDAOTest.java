@@ -47,6 +47,47 @@ class ContactDAOTest {
     }
 
     @Test
+    public void shouldBeAbleToRemoveContact() throws SQLException {
+        User newUser = new User("Diogo", "diogo", "123");
+        Long userId = userDAO.save(newUser);
+
+        Contact newContact = new Contact("Novo contato", "4141", "dluks82@email", userId);
+
+        Long contactId = sut.save(newContact);
+        assertEquals(1L, contactId);
+
+        Contact saved = sut.findByEmailAndUserId("dluks82@email", userId);
+
+        sut.remove(saved);
+
+        assertNull(sut.findByEmailAndUserId("dluks82@email", userId));
+    }
+
+    @Test
+    public void shouldBeAbleToUpdateContact() throws SQLException {
+        User newUser = new User("Diogo", "diogo", "123");
+        Long userId = userDAO.save(newUser);
+
+        Contact newContact = new Contact("Novo contato", "4141", "dluks82@email", userId);
+
+        Long contactId = sut.save(newContact);
+        assertEquals(1L, contactId);
+
+        Contact old = sut.findByEmailAndUserId("dluks82@email", userId);
+
+        old.setName("Contato editado");
+        old.setEmail("novo_dluks82@email");
+        old.setPhone(old.getPhone());
+
+        sut.update(old);
+
+        Contact edited = sut.findByEmailAndUserId("novo_dluks82@email", userId);
+
+        assertEquals("novo_dluks82@email", edited.getEmail());
+
+    }
+
+    @Test
     public void shouldBeAbleToGetAllContactsBelongsUser() throws SQLException {
         User newUser = new User("Diogo", "diogo", "123");
         Long userId = userDAO.save(newUser);
