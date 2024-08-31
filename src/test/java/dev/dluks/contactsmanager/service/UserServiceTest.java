@@ -30,6 +30,7 @@ class UserServiceTest {
             connection = db.getConnection();
 
             try (Statement stmt = connection.createStatement()) {
+                stmt.execute("DROP TABLE IF EXISTS contacts");
                 stmt.execute("DROP TABLE IF EXISTS users");
             }
 
@@ -47,6 +48,18 @@ class UserServiceTest {
         RegisterUserRequestDTO newUser = new RegisterUserRequestDTO("Diogo", "diogo", "123");
         RegisterUserResponseDTO response = sut.register(newUser);
         assertTrue(response.created());
+        assertEquals(1L, response.id());
+    }
+
+    @Test
+    public void shouldNotBeAbleToRegisterNewUserWithSameUsername() {
+        RegisterUserRequestDTO newUser = new RegisterUserRequestDTO("Diogo", "diogo", "123");
+        RegisterUserRequestDTO newUser_dup = new RegisterUserRequestDTO("Other Diogo", "diogo", "123");
+
+        RegisterUserResponseDTO response = sut.register(newUser);
+        RegisterUserResponseDTO response_dup = sut.register(newUser_dup);
+
+        assertFalse(response_dup.created());
     }
 
     @Test

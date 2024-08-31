@@ -18,13 +18,17 @@ public class UserService {
 
     public RegisterUserResponseDTO register(RegisterUserRequestDTO data) {
         try {
-
             if (userDAO.findByLogin(data.username()) != null) {
-                return new RegisterUserResponseDTO(false, "User already exists!");
+                return new RegisterUserResponseDTO(false, null, "User already exists!");
             }
 
             User newUser = new User(data.name(), data.username(), data.password());
-            return new RegisterUserResponseDTO(userDAO.registerUser(newUser), null);
+            Long generatedId = userDAO.save(newUser);
+
+            if (generatedId > 0) {
+                return new RegisterUserResponseDTO(true, generatedId, null);
+            }
+            return new RegisterUserResponseDTO(false, null, "Unexpected Error!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

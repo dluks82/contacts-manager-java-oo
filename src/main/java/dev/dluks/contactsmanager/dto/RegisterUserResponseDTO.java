@@ -1,5 +1,5 @@
 package dev.dluks.contactsmanager.dto;
 
-public record RegisterUserResponseDTO(boolean created, String errorMessage) {
+public record RegisterUserResponseDTO(boolean created, Long id, String errorMessage) {
 
 }
